@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dstencil-nginx
+  labels:
+    name: dstencil-nginx
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dstencil-nginx-service
+  namespace: dstencil-nginx
+spec:
+  ports:
+    - protocal: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: dstencil-nginx
+
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: dstencil-nginx-deployment
+  namespace: dstencil-nginx
+  labels:
+    app: dstencil-nginx-app
+
+spec:
+  selector:
+    matchLabels:
+      app: dstencil-nginx
+  template:
+    metadata:
+      labels:
+        app: dstencil-nginx
+    spec:
+      containers:
+      - name: dstencil-nginx-container
+        ports:
+        - containerPort: 80
+        image: nginx:latest
+        imagePullPolicy: IfNotPresent
